@@ -1,4 +1,4 @@
 [submodule "vicharak"]
 	path = vicharak
-	url = https://github.com/vicharak-in/u-boot-scripts
+	url = https://github.com/UtsavBalar1231/u-boot-scripts
 	branch = master
