@@ -72,6 +72,7 @@
 
 	// Regulators: {{{
 	vcc12v_dcin: vcc12v-dcin {
+		u-boot,dm-pre-reloc;
 		compatible = "regulator-fixed";
 		regulator-name = "vcc12v_dcin";
 		regulator-always-on;
@@ -81,6 +82,7 @@
 	};
 
 	vcc5v0_sys: vcc5v0-sys {
+		u-boot,dm-pre-reloc;
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_sys";
 		regulator-always-on;
@@ -91,6 +93,7 @@
 	};
 
 	vcc3v3_sys: vcc3v3-sys {
+		u-boot,dm-pre-reloc;
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_sys";
 		regulator-always-on;
@@ -154,32 +157,29 @@
 		pwm-supply = <&vcc5v0_sys>;
 		vin-supply = <&vcc5v0_sys>;
 	};
-	// End of Regulators }}}
 
-	// Leds: {{{
-	gpio_leds: gpio-leds {
-		compatible = "gpio-leds";
-		status = "disabled";
-		pinctrl-names = "default";
-		pinctrl-0 = <&user_led_rk_1_gpio &user_led_rk_2_gpio>;
-
-		user-led-rk-1 {
-			label = "power";
-			gpios = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-			retain-state-suspended;
-			linux,default-trigger = "default-on";
-		};
-
-		user-led-rk-2 {
-			label = "status";
-			gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-			retain-state-suspended;
-			linux,default-trigger = "heartbeat";
-		};
+	power_led: gpio-user-led-rk-1 {
+		u-boot,dm-pre-reloc;
+		compatible = "regulator-fixed";
+		regulator-name = "power_led";
+		enable-active-high;
+		regulator-boot-on;
+		regulator-always-on;
+		gpios = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
 	};
-	// End of Leds }}}
+
+	status_led: gpio-user-led-rk-2 {
+		u-boot,dm-pre-reloc;
+		compatible = "regulator-fixed";
+		regulator-name = "status_led";
+		enable-active-high;
+		regulator-boot-on;
+		regulator-always-on;
+		gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
+	};
+	// End of Regulators }}}
 
 	// RTL8822CS WIFI and BT: {{{
 	wireless_bluetooth: wireless-bluetooth {
@@ -758,20 +758,6 @@
 		};
 	};
 	// End of I2S 0 }}}
-
-	// Leds: {{{
-	leds {
-		user_led_rk_1_gpio: user-led-rk-1-gpio {
-			rockchip,pins =
-				<3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		user_led_rk_2_gpio: user-led-rk-2-gpio {
-			rockchip,pins =
-				<3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-	// End of Leds }}}
 
 	// PMIC: {{{
 	pmic {
