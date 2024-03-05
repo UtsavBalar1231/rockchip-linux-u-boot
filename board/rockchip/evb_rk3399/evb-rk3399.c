@@ -5,6 +5,7 @@
  */
 
 #include <common.h>
+#include <adc.h>
 #include <dm.h>
 #include <misc.h>
 #include <ram.h>
@@ -22,6 +23,9 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define RK3399_CPUID_OFF  0x7
 #define RK3399_CPUID_LEN  0x10
+
+#define KEY_DOWN_MIN_VAL  10
+#define KEY_DOWN_MAX_VAL  30
 
 int rk_board_init(void)
 {
@@ -72,6 +76,23 @@ int rk_board_init(void)
 
 out:
 	return 0;
+}
+
+int rockchip_dnl_key_pressed(void)
+{
+	unsigned int id_val;
+
+	if (adc_channel_single_shot("saradc", 2, &id_val)) {
+		printf("%s read adc recovery key failed\n", __func__);
+		return false;
+	}
+
+	printf("%s adc recovery key value: %d\n", __func__, id_val);
+
+	if (id_val >= KEY_DOWN_MIN_VAL && id_val <= KEY_DOWN_MAX_VAL)
+		return true;
+
+	return false;
 }
 
 static void setup_macaddr(void)
